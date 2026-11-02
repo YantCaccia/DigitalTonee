@@ -72,17 +72,22 @@ Put your photo in `assets/avatar.jpg` (square, a few hundred pixels; `.png` and 
 
 Create a bot with [@BotFather](https://t.me/BotFather) to get the token, send it a message, then read your chat id from `https://api.telegram.org/bot<TOKEN>/getUpdates`. Without Telegram, contacts and unanswered questions are only written to `logs/*.jsonl`.
 
-## Deploy for free on Hugging Face Spaces
+## Deploy for free on Render
 
-1. Generate the requirements file (Spaces installs dependencies from it):
+Hugging Face Spaces now requires a paid plan for Gradio apps, so this project deploys to a free [Render](https://render.com) web service (`render.yaml` is included).
+
+1. Generate the requirements file (Render installs dependencies from it) and commit it:
    ```bash
    uv export --no-hashes --no-dev --no-emit-project -o requirements.txt
    ```
-2. Create a new Space with the Gradio SDK and push the code to it. Spaces needs a YAML header at the top of its `README.md`, which would look odd on GitHub, so use [`deploy/space-README.md`](deploy/space-README.md) as the Space's `README.md`.
-3. In the Space settings, add the variables above as **Secrets**, including `CV_MD`, `LINKEDIN_MD` and `ABOUT_MD` with the text of your three documents. `logs/` is not persistent on Spaces, so Telegram is the reliable way to receive contacts.
-4. Open the Space once before sending it around: the first load after a period of inactivity is slow.
+2. On Render: **New > Blueprint**, connect the GitHub repository and apply `render.yaml`. Render asks for the values marked `sync: false`: the API key, the three documents (`CV_MD`, `LINKEDIN_MD`, `ABOUT_MD`), the photo (`AVATAR_B64`), Telegram and the other settings above. `pbcopy < data/cv.md` is a convenient way to copy a document on macOS.
+3. Wait for the build, then open the `onrender.com` URL and try it.
 
-The Gemini free tier has low rate limits, and free-tier data may be used by Google to improve its products. Tell visitors not to share sensitive information.
+Notes:
+- A free service is spun down after 15 minutes without traffic and takes about a minute to wake up. Open it once before sending the link around, or ping it periodically.
+- The filesystem is not persistent, so `logs/` is lost on restart: Telegram is the reliable way to receive contacts.
+- The app listens on the `PORT` that Render provides.
+- The Gemini free tier has low rate limits, and free-tier data may be used by Google to improve its products. Tell visitors not to share sensitive information.
 
 ## Project structure
 

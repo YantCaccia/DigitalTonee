@@ -1,0 +1,43 @@
+# Blueprint per Render (piano gratuito). Crea il servizio da GitHub: New > Blueprint.
+# I valori con `sync: false` non stanno nel repo: Render li chiede alla creazione.
+services:
+  - type: web
+    name: digital-twin
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    healthCheckPath: /
+    envVars:
+      # Segreti e dati personali
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: CV_MD
+        sync: false
+      - key: LINKEDIN_MD
+        sync: false
+      - key: ABOUT_MD
+        sync: false
+      - key: AVATAR_B64
+        sync: false
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: TELEGRAM_CHAT_ID
+        sync: false
+      # Configurazione
+      - key: OWNER_NAME
+        sync: false
+      - key: DISPLAY_NAME
+        sync: false
+      - key: LINKEDIN_URL
+        sync: false
+      - key: GEMINI_MODEL
+        sync: false
+      - key: GEMINI_FALLBACK_MODEL
+        sync: false
+      - key: GEMINI_REASONING_EFFORT
+        sync: false
+      - key: GLOBAL_RPM
+        value: "7"
+      - key: GLOBAL_RPD
+        value: "300"

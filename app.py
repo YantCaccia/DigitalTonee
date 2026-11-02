@@ -201,4 +201,7 @@ with gr.Blocks(title=ui.DISPLAY_NAME) as demo:
     demo.load(show_language, None, [col_it, col_en])
 
 if __name__ == "__main__":
-    demo.launch(theme=ui.THEME, css=ui.CSS)
+    # Render, Cloud Run e simili passano la porta in PORT e vogliono l'app raggiungibile dall'esterno.
+    port = os.getenv("PORT")
+    network = {"server_name": "0.0.0.0", "server_port": int(port)} if port else {}
+    demo.launch(theme=ui.THEME, css=ui.CSS, **network)
