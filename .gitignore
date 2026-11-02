@@ -1,0 +1,12 @@
+.env
+.venv/
+__pycache__/
+logs/
+.gradio/
+.DS_Store
+# dati personali: non vanno mai nel repo pubblico (tranne i modelli *.example.md)
+data/*
+!data/*.example.md
+# foto e CV
+assets/avatar.*
+assets/cv.pdf

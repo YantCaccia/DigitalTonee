@@ -1,0 +1,22 @@
+[project]
+name = "digital-twin"
+version = "0.1.0"
+description = "Digital Twin: a chatbot that answers recruiters' questions as you, built with the OpenAI Agents SDK, Gemini API and Gradio"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+dependencies = [
+    "openai-agents>=0.2",
+    "gradio>=5.0",
+    "python-dotenv>=1.0",
+    "httpx>=0.27",
+]
+
+[dependency-groups]
+# Solo per convertire i PDF in Markdown (scripts/parse_pdfs.py). PyMuPDF è AGPL: tenuto fuori dall'app e dal deploy.
+parse = [
+    "pymupdf4llm>=1.28,<2",  # 1.28+ include pymupdf-layout; la 2.0 è un pacchetto vuoto
+]
+
+[tool.uv]
+package = false
