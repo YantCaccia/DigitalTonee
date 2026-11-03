@@ -47,7 +47,7 @@ TEXTS = {
         "examples": [
             "Tell me about your background & journey",
             "What is your core tech stack?",
-            "Are you open to remote work? ↗",
+            "Are you open to remote work?",
         ],
         "rate_limited": "You've reached the message limit for this hour. Please try again later.",
         "too_long": f"Message too long (max {MAX_INPUT_CHARS} characters).",
