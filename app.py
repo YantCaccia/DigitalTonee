@@ -29,18 +29,26 @@ _hits: dict[str, deque] = defaultdict(deque)
 # Tutto ciò che il visitatore vede, per lingua. Italiano se il browser è in italiano, altrimenti inglese.
 TEXTS = {
     "it": {
-        "welcome": "Chiedimi di esperienza, competenze e progetti.",
-        "input": "Scrivi un messaggio…",
-        "examples": ["Parlami della tua esperienza", "Quali sono le tue competenze principali?", "Sei disponibile a lavorare da remoto?"],
+        "welcome": ui.placeholder_html("it"),
+        "input": "Chiedi qualsiasi cosa ad Antonio…",
+        "examples": [
+            "Parlami del tuo percorso e della tua esperienza",
+            "Qual è il tuo tech stack principale?",
+            "Sei disponibile a lavorare da remoto?",
+        ],
         "rate_limited": "Hai raggiunto il limite di messaggi per ora. Riprova più tardi.",
         "too_long": f"Messaggio troppo lungo (max {MAX_INPUT_CHARS} caratteri).",
         "busy": "Ci sono molte richieste in questo momento. Riprova tra qualche minuto.",
         "error": "Si è verificato un errore. Riprova tra poco.",
     },
     "en": {
-        "welcome": "Ask me about my experience, skills and projects.",
-        "input": "Type a message…",
-        "examples": ["Tell me about your experience", "What are your main skills?", "Are you open to remote work?"],
+        "welcome": ui.placeholder_html("en"),
+        "input": "Ask Antonio anything…",
+        "examples": [
+            "Tell me about your background & journey",
+            "What is your core tech stack?",
+            "Are you open to remote work? ↗",
+        ],
         "rate_limited": "You've reached the message limit for this hour. Please try again later.",
         "too_long": f"Message too long (max {MAX_INPUT_CHARS} characters).",
         "busy": "There are a lot of requests right now. Please try again in a few minutes.",
@@ -49,8 +57,7 @@ TEXTS = {
 }
 
 
-# Indicatore "sta scrivendo" in stile iMessage: tre pallini animati via CSS (vedi twin/ui.py).
-# Se il sanitizer di Gradio togliesse le classi, resterebbero tre pallini statici.
+# Indicatore "sta scrivendo": tre pallini animati via CSS (vedi twin/ui.py).
 TYPING = '<span class="typing"><span>●</span><span>●</span><span>●</span></span>'
 
 
@@ -161,38 +168,48 @@ def make_chat(lang: str):
 
 def build_chat_interface(lang: str) -> gr.ChatInterface:
     t = TEXTS[lang]
-    return gr.ChatInterface(
-        make_chat(lang),
-        chatbot=gr.Chatbot(
-            show_label=False,
-            elem_id=f"chat-{lang}",
-            placeholder=t["welcome"],
-            layout="bubble",
-            buttons=["copy", "copy_all"],  # senza "share" (condivisione su Hugging Face)
-        ),
-        # Con un textbox personalizzato ChatInterface non imposta i pulsanti: vanno attivati qui.
-        textbox=gr.Textbox(
-            show_label=False,
-            placeholder=t["input"],
-            lines=1,
-            max_lines=1,
-            scale=7,
-            autofocus=True,
-            submit_btn=True,
-            stop_btn=True,
-        ),
-        examples=t["examples"],
-        show_progress="hidden",  # niente "processing | 4.8/5.9s"
+    chatbot = gr.Chatbot(
+        show_label=False,
+        elem_id=f"chat-{lang}",
+        elem_classes=["chatbot-stage"],
+        height="auto",
+        placeholder=t["welcome"],
+        layout="bubble",
+        buttons=[],
+        sanitize_html=False,
+        render_markdown=True,
     )
+    textbox = gr.Textbox(
+        show_label=False,
+        placeholder=t["input"],
+        lines=1,
+        max_lines=1,
+        scale=7,
+        autofocus=True,
+        submit_btn=True,
+        stop_btn=True,
+    )
+    ci = gr.ChatInterface(
+        make_chat(lang),
+        chatbot=chatbot,
+        textbox=textbox,
+        examples=t["examples"],
+        show_progress="hidden",
+    )
+    gr.HTML(ui.subtext_html(lang))
+    return ci
 
 
-with gr.Blocks(title=ui.DISPLAY_NAME) as demo:
+with gr.Blocks(title=f"{ui.DISPLAY_NAME} | Digital Twin") as demo:
     gr.HTML(ui.header_html())
+
     # Entrambe le chat partono nascoste: al caricamento si mostra solo quella nella lingua del visitatore.
-    with gr.Column(visible=False) as col_it:
+    with gr.Column(visible=False, elem_classes=["stage-card"]) as col_it:
         build_chat_interface("it")
-    with gr.Column(visible=False) as col_en:
+    with gr.Column(visible=False, elem_classes=["stage-card"]) as col_en:
         build_chat_interface("en")
+
+    gr.HTML(ui.footer_html())
 
     def show_language(request: gr.Request):
         it = _language(request) == "it"
