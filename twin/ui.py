@@ -780,8 +780,7 @@ def header_html() -> str:
         f'<div class="avatar-badge" title="Verified Digital Twin"></div>'
         f'</div>'
         f'<h2 class="persona-name">'
-        f'<a href="{LINKEDIN_URL}" target="_blank" rel="noopener noreferrer" '
-        f'title="LinkedIn – {DISPLAY_NAME}">{DISPLAY_NAME}</a>'
+        {DISPLAY_NAME}
         f'</h2>'
         f'<p class="persona-subtitle">Digital Twin</p>'
         f'<a class="linkedin-pill" href="{LINKEDIN_URL}" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>'
