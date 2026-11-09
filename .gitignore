@@ -8,5 +8,4 @@ logs/
 data/*
 !data/*.example.md
 # foto e CV
-assets/avatar.*
-assets/cv.pdf
+assets/*
