@@ -1,6 +1,9 @@
+import base64
 import os
 import time
 from collections import defaultdict, deque
+from pathlib import Path
+from tempfile import gettempdir
 
 from fastapi import FastAPI
 import gradio as gr
@@ -225,12 +228,22 @@ app = FastAPI()
 def health():
     return {"status": "ok"}
 
+# La Memoji resta nella configurazione Render, mai nella repository.
+favicon_path = None
+if favicon_b64 := os.getenv("FAVICON_B64"):
+    favicon_file = Path(gettempdir()) / "digitaltonee-favicon.ico"
+    favicon_file.write_bytes(
+        base64.b64decode(favicon_b64.strip(), validate=True)
+    )
+    favicon_path = str(favicon_file)
+
 app = gr.mount_gradio_app(
     app,
     demo,
     path="/",
     theme=ui.THEME,
     css=ui.CSS,
+    favicon_path=favicon_path,
 )
 
 if __name__ == "__main__":
