@@ -2,10 +2,12 @@ import os
 import time
 from collections import defaultdict, deque
 
+from fastapi import FastAPI
 import gradio as gr
 from agents import Runner
 from dotenv import load_dotenv
 from openai.types.responses import ResponseTextDeltaEvent
+import uvicorn
 
 load_dotenv()
 
@@ -217,8 +219,20 @@ with gr.Blocks(title=f"{ui.DISPLAY_NAME} | Digital Twin") as demo:
 
     demo.load(show_language, None, [col_it, col_en])
 
+app = FastAPI()
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
+app = gr.mount_gradio_app(
+    app,
+    demo,
+    path="/",
+    theme=ui.THEME,
+    css=ui.CSS,
+)
+
 if __name__ == "__main__":
-    # Render, Cloud Run e simili passano la porta in PORT e vogliono l'app raggiungibile dall'esterno.
-    port = os.getenv("PORT")
-    network = {"server_name": "0.0.0.0", "server_port": int(port)} if port else {}
-    demo.launch(theme=ui.THEME, css=ui.CSS, **network)
+    port = int(os.getenv("PORT", 7860))
+    uvicorn.run(app, host="0.0.0.0", port=port)

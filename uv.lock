@@ -541,10 +541,12 @@ name = "digital-twin"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "fastapi" },
     { name = "gradio" },
     { name = "httpx" },
     { name = "openai-agents" },
     { name = "python-dotenv" },
+    { name = "uvicorn" },
 ]
 
 [package.dev-dependencies]
@@ -554,10 +556,12 @@ parse = [
 
 [package.metadata]
 requires-dist = [
+    { name = "fastapi", specifier = ">=0.162.0" },
     { name = "gradio", specifier = ">=5.0" },
     { name = "httpx", specifier = ">=0.27" },
     { name = "openai-agents", specifier = ">=0.2" },
     { name = "python-dotenv", specifier = ">=1.0" },
+    { name = "uvicorn", specifier = ">=0.54.0" },
 ]
 
 [package.metadata.requires-dev]
