@@ -221,7 +221,7 @@ with gr.Blocks(title=f"{ui.DISPLAY_NAME} | Digital Twin") as demo:
 
 app = FastAPI()
 
-@app.get("/health")
+@app.head("/health")
 def health():
     return {"status": "ok"}
 
