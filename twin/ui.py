@@ -794,10 +794,6 @@ def placeholder_html(lang: str) -> str:
         return (
             '<div class="hero-stage">'
             '<h1 class="hero-greeting">Chiedimi di esperienza, competenze e progetti.</h1>'
-            '<p class="hero-description">'
-            'Istruito sulla traiettoria professionale verificata di Antonio, ingegneria dei sistemi, '
-            'filosofia di design e casi di studio di produzione.'
-            '</p>'
             '</div>'
         )
     return (
