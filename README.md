@@ -1,6 +1,6 @@
-# Digital Twin
+# DigitalTonee
 
-A chatbot that answers recruiters' questions **as you**, based on your CV and LinkedIn profile. Send the link together with your application and let them ask about your experience, skills and availability.
+A chatbot that answers professional and career-related questions **as you**, based on your CV and LinkedIn profile. Let them ask about your experience, skills and availability.
 
 Built with the [OpenAI Agents SDK](https://openai.github.io/openai-agents-python/), the **Gemini API** (via its OpenAI-compatible endpoint) and [Gradio](https://www.gradio.app/). It runs entirely on free tiers.
 
