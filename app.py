@@ -243,6 +243,7 @@ app = gr.mount_gradio_app(
     path="/",
     theme=ui.THEME,
     css=ui.CSS,
+    head=ui.HEAD,
     favicon_path=favicon_path,
 )
 
