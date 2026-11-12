@@ -31,6 +31,16 @@ MAX_INPUT_CHARS = 1000
 MAX_MSGS_PER_HOUR = 30
 _hits: dict[str, deque] = defaultdict(deque)
 
+# Caratteri invisibili (zero-width, word joiner, BOM, soft hyphen): str.strip() non li toglie, quindi un
+# messaggio fatto solo di questi sembrerebbe "pieno" e arriverebbe al modello.
+_INVISIBLE = dict.fromkeys(map(ord, "\u200b\u200c\u200d\u2060\ufeff\u00ad"))
+
+
+def _visible(text: str) -> str:
+    """Testo ripulito da spazi e caratteri invisibili, per capire se c'è davvero qualcosa da inviare."""
+    return text.translate(_INVISIBLE).strip()
+
+
 # Tutto ciò che il visitatore vede, per lingua. Italiano se il browser è in italiano, altrimenti inglese.
 TEXTS = {
     "it": {
@@ -127,6 +137,11 @@ def make_chat(lang: str):
     t = TEXTS[lang]
 
     async def chat(message: str, history: list[dict], request: gr.Request):
+        # Un invio vuoto (o di soli spazi) non deve arrivare al modello: sprecherebbe una richiesta
+        # Gemini e la quota oraria del visitatore. Va controllato prima di tutto il resto.
+        message = _visible(_text(message or ""))
+        if not message:
+            return
         if _rate_limited(_client_ip(request)):
             yield t["rate_limited"]
             return
@@ -205,7 +220,7 @@ def build_chat_interface(lang: str) -> gr.ChatInterface:
     return ci
 
 
-with gr.Blocks(title=f"{ui.DISPLAY_NAME} | Digital Twin") as demo:
+with gr.Blocks(title=f"{ui.DISPLAY_NAME} - Digital Twin") as demo:
     gr.HTML(ui.header_html())
 
     # Entrambe le chat partono nascoste: al caricamento si mostra solo quella nella lingua del visitatore.

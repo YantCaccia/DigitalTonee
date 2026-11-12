@@ -1316,6 +1316,14 @@ HEAD = """
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content" />
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#FAFBFD" />
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0B0D14" />
+<title>Antonio Cacciapuoti - Digital Twin</title>
+<meta name="description" content="Antonio's Digital Twin">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Antonio Cacciapuoti - Digital Twin">
+<meta property="og:description" content="Antonio's Digital Twin">
+<meta property="og:url" content="https://antonio.is-a.bot">
+<meta property="og:image" content="https://antonio.is-a.bot/favicon.ico">
 <style>
 /* Gradio scopes the `css=` stylesheet to descendants of `.contain`, so the page
    shell has to be styled from here to make the app full-bleed on phones. */
@@ -1405,6 +1413,30 @@ HEAD = """
         attributes: true,
         attributeFilter: ['placeholder'],
     });
+
+    // An empty composer must not submit: Gradio would still fire the request, showing an empty
+    // bubble and (before the server-side guard) spending a model call. Capture phase so this
+    // runs before Gradio's own handlers on the input / send button.
+    const INVISIBLE = /[\s\u200b\u200c\u200d\u2060\ufeff\u00ad]/g;
+    const composer = () => document.querySelector('.stage-card input[type="text"]');
+    const isBlank = (el) => !(el.value || '').replace(INVISIBLE, '');
+    const swallow = (e) => {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+    };
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter') return;
+        const t = e.target;
+        if (t && t.tagName === 'INPUT' && t.type === 'text' && isBlank(t)) swallow(e);
+    }, true);
+
+    document.addEventListener('click', (e) => {
+        const btn = e.target && e.target.closest ? e.target.closest('button') : null;
+        if (!btn || !/submit/i.test(btn.className || '')) return;
+        const box = composer();
+        if (box && isBlank(box)) swallow(e);
+    }, true);
 })();
 </script>
 """
