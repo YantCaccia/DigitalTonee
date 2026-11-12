@@ -1,4 +1,4 @@
-# Digital Twin
+# DigitalTonee
 
 A chatbot that answers recruiters' questions **as you**, based on your CV and LinkedIn profile. Send the link together with your application and let them ask about your experience, skills and availability.
 
