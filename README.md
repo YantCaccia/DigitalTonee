@@ -48,7 +48,7 @@ then **review the generated Markdown by hand**: PDF extraction is never perfect.
 Run the app:
 
 ```bash
-uv run python app.py        # http://127.0.0.1:7860
+uv run uvicorn app:app --host 0.0.0.0 --port 7860    # http://127.0.0.1:7860
 ```
 
 ## Configuration
